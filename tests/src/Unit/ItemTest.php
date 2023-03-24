@@ -11,3 +11,13 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace Stash\Test\Unit;
+
+/**
+ * @package Stash
+ * @author  Robert Hafner <tedivm@tedivm.com>
+ */
+class ItemTest extends ItemTestBase
+{
+}

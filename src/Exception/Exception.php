@@ -11,3 +11,18 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace Stash\Exception;
+
+use \Psr\Cache\CacheException;
+
+/**
+ * Interface for the Stash exceptions.
+ *
+ * Interface Exception
+ * @package Stash\Exception
+ * @author  Robert Hafner <tedivm@tedivm.com>
+ */
+interface Exception extends CacheException
+{
+}

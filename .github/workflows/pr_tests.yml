@@ -1,36 +1,100 @@
-name: CI
+name: 'CI'
 
-on: [push, pull_request]
+on:
+    - 'push'
+    - 'pull_request'
 env:
-  IS_GITHUB: "true"
+  IS_GITHUB: 'true'
+  XDEBUG_MODE: 'coverage'
 
 jobs:
-  phpunit:
-    strategy:
-      fail-fast: false
-      matrix:
-        php_version: ["8.0", "8.1", "latest"]
-    runs-on: ubuntu-latest
+    phpunit:
+        runs-on: 'ubuntu-latest'
 
-    steps:
-    - uses: actions/checkout@v2
+        strategy:
+            fail-fast: false
+            matrix:
+                php_version:
+                    - '8.1.17'
+                    - '8.2.4'
 
-    - name: Start Redis on Default Port
-      uses: supercharge/redis-github-action@1.4.0
-      with:
-        redis-port: 6379
-
-
-    # - name: Start 2nd Redis Server on 6380
-    #   uses: supercharge/redis-github-action@1.4.0
-    #   with:
-    #     redis-port: 6380
-
-    # These are the versions of the *actions*, not the libraries.
-    - name: Install PHP Packages
-      uses: php-actions/composer@v5
-
-    - name: Run Tests
-      uses: php-actions/phpunit@v3
-      with:
-        php_version: ${{ matrix.php_version }}
+        steps:
+            -
+                uses: 'actions/checkout@v2'
+            -
+                name: 'Redis - 6379'
+                uses: 'supercharge/redis-github-action@1.5.0'
+                with:
+                    redis-container-name: 'redis_url1'
+                    redis-port: 6379
+            -
+                name: 'Redis - 6380'
+                uses: 'supercharge/redis-github-action@1.5.0'
+                with:
+                    redis-container-name: 'redis_url2'
+                    redis-port: 6380
+            -
+                name: 'Memcache - 11211'
+                uses: 'niden/actions-memcached@v7'
+            -
+                name: 'Install PHP Packages'
+                uses: 'php-actions/composer@v6'
+                with:
+                    version: '2.x'
+                    php_version: '${{ matrix.php_version }}'
+                    php_extensions: >-
+                        apcu
+                        memcache
+                        memcached
+                        pcov
+                        pdo
+                        pdo_sqlite
+                        redis
+            -
+                name: 'Lint - phpcs'
+                uses: 'php-actions/composer@v6'
+                with:
+                    version: '2.x'
+                    php_version: '${{ matrix.php_version }}'
+                    php_extensions: >-
+                        apcu
+                        memcache
+                        memcached
+                        pcov
+                        pdo
+                        pdo_sqlite
+                        redis
+                    command: 'run'
+                    args: "lint:phpcs"
+            -
+                name: 'Test - Unit'
+                uses: 'php-actions/composer@v6'
+                with:
+                    version: '2.x'
+                    php_version: '${{ matrix.php_version }}'
+                    php_extensions: >-
+                        apcu
+                        memcache
+                        memcached
+                        pcov
+                        pdo
+                        pdo_sqlite
+                        redis
+                    command: 'run'
+                    args: "test:unit"
+            -
+                name: 'Test - Acceptance'
+                uses: 'php-actions/composer@v6'
+                with:
+                    version: '2.x'
+                    php_version: '${{ matrix.php_version }}'
+                    php_extensions: >-
+                        apcu
+                        memcache
+                        memcached
+                        pcov
+                        pdo
+                        pdo_sqlite
+                        redis
+                    command: 'run'
+                    args: "test:acceptance"

@@ -1,11 +1,9 @@
-/.idea
-/.settings
-/.buildpath
-/.project
+/vendor/
 /composer.lock
-/vendor
-/report
-/build
 
-.php_cs.cache
-.phpunit.result.cache
+/reports/
+
+/phpcs.xml
+
+/phpunit.xml
+/.phpunit.result.cache

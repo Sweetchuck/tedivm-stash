@@ -1,17 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./tests/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage>
-    <include>
-      <directory suffix=".php">./src/Stash/</directory>
-    </include>
-    <exclude>
-      <directory>./src/Stash/Exception</directory>
-      <directory>./src/Stash/Interfaces</directory>
-    </exclude>
-  </coverage>
-  <testsuites>
-    <testsuite name="Stash Test Suite">
-      <directory suffix="Test.php">./tests/Stash/</directory>
-    </testsuite>
-  </testsuites>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="./tests/bootstrap.php"
+    verbose="true"
+    colors="true">
+
+    <php>
+        <ini name="date.timezone" value="UTC" />
+        <ini name="error_reporting" value="-1" />
+
+        <env name="STASH_TESTING" value="true" force="true" />
+
+        <env name="STASH_MEMCACHE_SERVERS" value="127.0.0.1:11211 127.0.0.1:11211:50" />
+
+        <env name="STASH_REDIS_SERVER_SOCKET" value="/tmp/redis.sock:-1" />
+        <env name="STASH_REDIS_SERVER_URL1" value="127.0.0.1:6379" />
+        <env name="STASH_REDIS_SERVER_URL2" value="127.0.0.1:6380" />
+        <env name="STASH_REDIS_SERVER_NONE" value="127.0.0.1:6381" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>./tests/src/Unit/</directory>
+        </testsuite>
+        <testsuite name="Acceptance">
+            <directory>./tests/src/Acceptance/</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory>./src/</directory>
+        </include>
+
+        <report>
+            <clover outputFile="reports/machine/coverage/phpunit.xml"/>
+            <html outputDirectory="reports/human/coverage/html"/>
+            <text outputFile="php://stdout"/>
+        </report>
+    </coverage>
+
+    <logging>
+        <testdoxHtml outputFile="reports/human/junit/phpunit.html"/>
+        <junit outputFile="reports/machine/junit/phpunit.xml"/>
+    </logging>
 </phpunit>
